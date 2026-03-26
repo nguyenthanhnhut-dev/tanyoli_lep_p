@@ -1258,7 +1258,6 @@ function buildSections() {
     container.appendChild(div);
   });
 
-  // Build step dots
   const dotsEl = document.getElementById('step-dots');
   dotsEl.innerHTML = '';
   sections.forEach((_, i) => {
@@ -1298,7 +1297,6 @@ function goToSection(idx) {
   document.getElementById(`dot-${currentSection}`).classList.add('active');
   document.getElementById(`dot-${currentSection}`).classList.remove('done');
 
-  // Restore radio states
   const sec = sections[currentSection];
   sec.questions.forEach((_, qi) => {
     const key = `s${currentSection}-q${qi}`;
@@ -1319,8 +1317,7 @@ function sectionAnswered() {
 }
 
 function showAlert() {
-  const el = document.getElementById('alert-msg');
-  el.classList.add('show');
+  document.getElementById('alert-msg').classList.add('show');
 }
 function hideAlert() {
   document.getElementById('alert-msg').classList.remove('show');
@@ -1386,7 +1383,6 @@ function showResults() {
   resultsEl.classList.add('active');
   resultsEl.style.display = 'flex';
 
-  // User info card
   const infoCard = document.getElementById('user-info-card');
   infoCard.innerHTML = [
     { label: 'Họ và Tên', value: userInfo.name },
@@ -1401,7 +1397,6 @@ function showResults() {
     </div>
   `).join('');
 
-  // Calculate scores
   let total = 0;
   const grid = document.getElementById('results-grid');
   grid.innerHTML = '';
@@ -1440,12 +1435,10 @@ function showResults() {
     }, 100 + si * 70);
   });
 
-  // Total
   document.getElementById('total-number').textContent = total;
   const msg = totalMessages.find(m => total <= m.max) || totalMessages[totalMessages.length-1];
   document.getElementById('total-message').textContent = msg.msg;
 
-  // Radar chart
   const scores = sections.map((sec, si) => {
     let s = 0;
     sec.questions.forEach((_, qi) => { s += answers[`s${si}-q${qi}`] || 0; });
@@ -1478,10 +1471,9 @@ function showResults() {
           duration: 1200,
           easing: 'easeInOutQuart',
           onComplete: function() {
-            // TỰ ĐỘNG GỬI DỮ LIỆU KHI VẼ XONG BIỂU ĐỒ
             window._radarBase64 = document.getElementById('radarChart').toDataURL('image/png');
             if (!window._hasAutoExported) {
-              window._hasAutoExported = true; // Tránh gửi nhiều lần nếu biểu đồ re-render
+              window._hasAutoExported = true;
               exportData();
             }
           }
@@ -1528,8 +1520,6 @@ function showResults() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── TỰ ĐỘNG EXPORT (Đã ẩn nút bấm) ─────────────────────────
-
 function showModal(state, extraMsg) {
   const box = document.getElementById('modal-box');
   const overlay = document.getElementById('modal');
@@ -1560,15 +1550,13 @@ function closeModal() {
 }
 
 async function exportData() {
-  // Gắn cứng URL Web App của bạn
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbxNEjTdtxZAYCJv6IafHvbq2-pkFwOfpgRU4LVR873y4xp8x1qM4SRIKS1NZCmXOtPY/exec';
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec';
 
   if (!scriptUrl || scriptUrl.trim() === '' || !scriptUrl.includes('/exec')) {
     showModal('config-error');
     return;
   }
 
-  // Build scores
   const scores = sections.map((sec, si) => {
     let s = 0;
     sec.questions.forEach((_, qi) => { s += answers[`s${si}-q${qi}`] || 0; });
@@ -1619,7 +1607,6 @@ async function exportData() {
       throw new Error(json.error || 'Lỗi không xác định từ máy chủ');
     }
     
-    // Thành công -> Ghi log ra Console ẩn, không hiện pop-up làm phiền người dùng
     console.log('Đã tự động gửi kết quả ngầm thành công!');
     
   } catch(err) {
@@ -1633,10 +1620,9 @@ function restartSurvey() {
   answers = {};
   userInfo = {};
   currentSection = 0;
-  window._hasAutoExported = false; // Reset trạng thái để chạy tự động cho lần làm khảo sát tiếp theo
+  window._hasAutoExported = false;
   document.getElementById('results').classList.remove('active');
   document.getElementById('results').style.display = '';
-  // Clear info fields
   ['f-name','f-email','f-job'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-age').value = '';
   document.getElementById('f-gender').value = '';
