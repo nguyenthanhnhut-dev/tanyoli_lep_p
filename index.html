@@ -602,70 +602,6 @@
     color: var(--lotus);
   }
 
-  /* === MODAL === */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(13,12,26,0.88);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal-box {
-    background: #15142a;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 48px 40px;
-    max-width: 440px;
-    width: 100%;
-    text-align: center;
-    position: relative;
-  }
-
-  .modal-icon {
-    font-size: 48px;
-    margin-bottom: 20px;
-    display: block;
-  }
-
-  .modal-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    margin-bottom: 10px;
-    color: var(--paper);
-  }
-
-  .modal-body {
-    font-size: 14px;
-    color: var(--mist);
-    line-height: 1.65;
-    margin-bottom: 28px;
-  }
-
-  .modal-body strong { color: var(--lotus-light); }
-
-  .modal-close {
-    padding: 12px 32px;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--mist);
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-
-  .modal-close:hover { border-color: var(--lotus); color: var(--lotus); }
-
   .user-info-card {
     display: flex;
     flex-wrap: wrap;
@@ -996,11 +932,6 @@
     <div class="results-grid" id="results-grid"></div>
 
     <button class="restart-btn" onclick="restartSurvey()">↺ Làm lại khảo sát</button>
-  </div>
-
-  <div class="modal-overlay" id="modal">
-    <div class="modal-box" id="modal-box">
-      </div>
   </div>
 
 </div>
@@ -1520,42 +1451,9 @@ function showResults() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showModal(state, extraMsg) {
-  const box = document.getElementById('modal-box');
-  const overlay = document.getElementById('modal');
-  
-  if (state === 'error') {
-    box.innerHTML = `
-      <span class="modal-icon" style="font-size:40px;color:#f0a0a0">⚠</span>
-      <div class="modal-title" style="color:#f0a0a0">Có lỗi xảy ra</div>
-      <div class="modal-body">${extraMsg || 'Không thể lưu dữ liệu lúc này. Vui lòng kiểm tra lại URL Apps Script và thử lại.'}</div>
-      <button class="modal-close" onclick="closeModal()">Đóng</button>
-    `;
-  } else if (state === 'config-error') {
-    box.innerHTML = `
-      <span class="modal-icon" style="font-size:36px">⚙</span>
-      <div class="modal-title">Lỗi cấu hình URL</div>
-      <div class="modal-body">
-        URL Web App không hợp lệ hoặc thiếu.<br>
-        <strong>Quan trọng:</strong> Hãy đảm bảo Google Apps Script của bạn đã chọn <strong>Execute as: Me</strong> và <strong>Who has access: Anyone</strong>.
-      </div>
-      <button class="modal-close" onclick="closeModal()">Đóng</button>
-    `;
-  }
-  overlay.classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
+// Hàm gửi dữ liệu chạy NGẦM 100%
 async function exportData() {
   const scriptUrl = 'https://script.google.com/macros/s/AKfycbx0gA9nCJbzvP6pBOLz-xxqdJCBErUJ9J0qAKxz8BTmMolEV05G4QCLVtYF5Syj2mSG/exec';
-
-  if (!scriptUrl || scriptUrl.trim() === '' || !scriptUrl.includes('/exec')) {
-    showModal('config-error');
-    return;
-  }
 
   const scores = sections.map((sec, si) => {
     let s = 0;
@@ -1594,25 +1492,18 @@ async function exportData() {
 
   try {
     const params = new URLSearchParams({ data: JSON.stringify(payload) });
-    const res = await fetch(scriptUrl, {
+    await fetch(scriptUrl, {
       method: 'POST',
       body: params,
       redirect: 'follow'
     });
-    const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); } catch(e) { json = { success: true }; }
     
-    if (json.success === false) {
-      throw new Error(json.error || 'Lỗi không xác định từ máy chủ');
-    }
-    
+    // Im lặng ghi log thành công, không hiện popup
     console.log('Đã tự động gửi kết quả ngầm thành công!');
     
   } catch(err) {
-    showModal('error', err.message.includes('Failed to fetch')
-      ? 'Không kết nối được đến máy chủ lưu trữ. Bạn kiểm tra lại kết nối mạng nhé.'
-      : err.message);
+    // Im lặng ghi log lỗi, không hiện popup
+    console.error('Lỗi khi gửi dữ liệu ngầm:', err);
   }
 }
 
