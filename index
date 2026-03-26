@@ -657,6 +657,7 @@
     margin-bottom: 20px;
     animation: fadeUp 0.5s 0.65s ease forwards;
     opacity: 0;
+    /* Có thể thêm display: none; vào đây nếu bạn muốn ẩn hẳn ô cấu hình này với người dùng */
   }
 
   .config-label {
@@ -1117,9 +1118,10 @@
       <span class="config-label">⚙ Cấu hình Google Apps Script URL</span>
       <div class="config-input-row">
         <input class="config-input" id="script-url-input"
-          placeholder="https://script.google.com/macros/s/AKfycbw__hl9j3G2BdFib5h4iTZcENvRSgNgjVgsjqk_ZQimJgZGyjLEmVmtTKeMY4GicVa0/exec"
+          value="https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec"
+          placeholder="https://script.google.com/macros/s/.../exec"
           oninput="scriptUrlChanged()">
-        <button class="config-save-btn" id="config-save-btn" onclick="saveScriptUrl()">Lưu URL</button>
+        <button class="config-save-btn config-saved" id="config-save-btn" onclick="saveScriptUrl()">✓ Đã lưu</button>
       </div>
     </div>
 
@@ -1158,7 +1160,7 @@ const sections = [
         ]
       },
       {
-        text: "Cách bạn thu thập thông tin trước một quyết định quan trọng:",
+        text: "Cách bạn thu thập thông vị trước một quyết định quan trọng:",
         options: [
           "Tin vào trực giác hoặc ý kiến của người đầu tiên mình hỏi.",
           "Đọc vài nguồn tin quen thuộc và chọn cái mình thấy hợp lý nhất.",
@@ -1659,7 +1661,6 @@ function showResults() {
   }, 200);
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(loadSavedUrl, 100);
 }
 
 // ─── EXPORT ────────────────────────────────────────────
@@ -1679,8 +1680,10 @@ function saveScriptUrl() {
 }
 
 function getScriptUrl() {
+  // Lấy từ input -> Nếu không có lấy từ localStorage -> Nếu không có thì lấy link mặc định
   return document.getElementById('script-url-input').value.trim() ||
-         localStorage.getItem(STORAGE_KEY) || '';
+         localStorage.getItem(STORAGE_KEY) || 
+         'https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec';
 }
 
 function showModal(state, extraMsg) {
@@ -1747,7 +1750,6 @@ async function exportData() {
   const total = scores.reduce((a, b) => a + b, 0);
   const totalMsg = (totalMessages.find(m => total <= m.max) || totalMessages[totalMessages.length-1]).msg;
 
-  // Tính toán cấp độ (Level) với mã gọn gàng hơn
   const sectionResults = sections.map((sec, i) => {
     const score = scores[i];
     const levelIndex = score <= 2 ? 0 : score <= 4 ? 1 : score <= 6 ? 2 : 3;
@@ -1796,12 +1798,6 @@ async function exportData() {
       ? 'Không kết nối được đến Apps Script. Kiểm tra URL và đảm bảo đã deploy đúng cách.'
       : err.message);
   }
-}
-
-// Load saved URL when results appear
-function loadSavedUrl() {
-  const saved = localStorage.getItem(STORAGE_KEY) || '';
-  if (saved) document.getElementById('script-url-input').value = saved;
 }
 
 function restartSurvey() {
