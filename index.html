@@ -580,7 +580,7 @@
     display: block;
     width: 100%;
     max-width: 300px;
-    margin: 0 auto;
+    margin: 40px auto 0;
     padding: 16px;
     text-align: center;
     font-family: 'Be Vietnam Pro', sans-serif;
@@ -601,113 +601,6 @@
     border-color: var(--lotus);
     color: var(--lotus);
   }
-
-  /* === EXPORT SECTION === */
-  .export-section {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 24px 28px;
-    background: rgba(201,151,90,0.05);
-    margin-bottom: 20px;
-    animation: fadeUp 0.5s 0.6s ease forwards;
-    opacity: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .export-info { flex: 1; min-width: 200px; }
-
-  .export-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    color: var(--lotus-light);
-    margin-bottom: 4px;
-  }
-
-  .export-desc {
-    font-size: 12px;
-    color: var(--mist);
-  }
-
-  .btn-export {
-    padding: 14px 28px;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    font-weight: 600;
-    background: linear-gradient(135deg, var(--lotus), var(--lotus-light));
-    border: none;
-    color: var(--ink);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .btn-export:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,151,90,0.3); }
-  .btn-export:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  /* === SCRIPT URL CONFIG === */
-  .config-wrap {
-    margin-bottom: 20px;
-    animation: fadeUp 0.5s 0.65s ease forwards;
-    opacity: 0;
-    /* Có thể thêm display: none; vào đây nếu bạn muốn ẩn hẳn ô cấu hình này với người dùng */
-  }
-
-  .config-label {
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--lotus);
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 7px;
-  }
-
-  .config-input-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .config-input {
-    flex: 1;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 3px;
-    padding: 10px 14px;
-    color: var(--paper);
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .config-input:focus { border-color: var(--lotus); }
-  .config-input::placeholder { color: rgba(138,132,153,0.4); font-size: 11px; }
-
-  .config-save-btn {
-    padding: 10px 18px;
-    font-size: 11px;
-    letter-spacing: 1px;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    text-transform: uppercase;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--lotus);
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .config-save-btn:hover { border-color: var(--lotus); background: rgba(201,151,90,0.08); }
-  .config-saved { color: #7ee8a2; border-color: rgba(126,232,162,0.4); }
 
   /* === MODAL === */
   .modal-overlay {
@@ -1114,27 +1007,6 @@
 
     <div class="results-grid" id="results-grid"></div>
 
-    <div class="config-wrap">
-      <span class="config-label">⚙ Cấu hình Google Apps Script URL</span>
-      <div class="config-input-row">
-        <input class="config-input" id="script-url-input"
-          value="https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec"
-          placeholder="https://script.google.com/macros/s/.../exec"
-          oninput="scriptUrlChanged()">
-        <button class="config-save-btn config-saved" id="config-save-btn" onclick="saveScriptUrl()">✓ Đã lưu</button>
-      </div>
-    </div>
-
-    <div class="export-section">
-      <div class="export-info">
-        <div class="export-title">Lưu & Gửi Kết Quả</div>
-        <div class="export-desc">Xuất dữ liệu sang Google Sheet và gửi email kết quả kèm biểu đồ radar</div>
-      </div>
-      <button class="btn-export" id="btn-export" onclick="exportData()">
-        ✦ Gửi Email & Lưu Sheet
-      </button>
-    </div>
-
     <button class="restart-btn" onclick="restartSurvey()">↺ Làm lại khảo sát</button>
   </div>
 
@@ -1160,7 +1032,7 @@ const sections = [
         ]
       },
       {
-        text: "Cách bạn thu thập thông vị trước một quyết định quan trọng:",
+        text: "Cách bạn thu thập thông tin trước một quyết định quan trọng:",
         options: [
           "Tin vào trực giác hoặc ý kiến của người đầu tiên mình hỏi.",
           "Đọc vài nguồn tin quen thuộc và chọn cái mình thấy hợp lý nhất.",
@@ -1618,7 +1490,12 @@ function showResults() {
           duration: 1200,
           easing: 'easeInOutQuart',
           onComplete: function() {
+            // TỰ ĐỘNG GỬI DỮ LIỆU KHI VẼ XONG BIỂU ĐỒ (Sau ~1.2s)
             window._radarBase64 = document.getElementById('radarChart').toDataURL('image/png');
+            if (!window._hasAutoExported) {
+              window._hasAutoExported = true; // Tránh gửi nhiều lần nếu biểu đồ re-render
+              exportData();
+            }
           }
         },
         scales: {
@@ -1663,28 +1540,7 @@ function showResults() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── EXPORT ────────────────────────────────────────────
-const STORAGE_KEY = 'lep_script_url';
-
-function scriptUrlChanged() {
-  document.getElementById('config-save-btn').classList.remove('config-saved');
-  document.getElementById('config-save-btn').textContent = 'Lưu URL';
-}
-
-function saveScriptUrl() {
-  const url = document.getElementById('script-url-input').value.trim();
-  localStorage.setItem(STORAGE_KEY, url);
-  const btn = document.getElementById('config-save-btn');
-  btn.textContent = '✓ Đã lưu';
-  btn.classList.add('config-saved');
-}
-
-function getScriptUrl() {
-  // Lấy từ input -> Nếu không có lấy từ localStorage -> Nếu không có thì lấy link mặc định
-  return document.getElementById('script-url-input').value.trim() ||
-         localStorage.getItem(STORAGE_KEY) || 
-         'https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec';
-}
+// ─── TỰ ĐỘNG EXPORT (Đã ẩn nút bấm) ─────────────────────────
 
 function showModal(state, extraMsg) {
   const box = document.getElementById('modal-box');
@@ -1693,33 +1549,24 @@ function showModal(state, extraMsg) {
     box.innerHTML = `
       <div class="spinner"></div>
       <div class="modal-title">Đang xử lý...</div>
-      <div class="modal-body">Đang lưu kết quả vào Google Sheet và gửi email cho bạn. Vui lòng chờ.</div>
+      <div class="modal-body">Hệ thống đang tự động lưu kết quả và gửi email cho bạn. Vui lòng đợi trong giây lát...</div>
     `;
   } else if (state === 'success') {
     box.innerHTML = `
       <span class="modal-icon">✦</span>
       <div class="modal-title">Hoàn tất!</div>
       <div class="modal-body">
-        Dữ liệu đã được lưu vào <strong>Google Sheet</strong>.<br>
-        Email kết quả kèm biểu đồ radar đã gửi đến<br>
+        Kết quả của bạn đã được lưu lại.<br>
+        Email chi tiết kèm biểu đồ radar đã được gửi đến<br>
         <strong>${userInfo.email}</strong>
       </div>
-      <button class="modal-close" onclick="closeModal()">Đóng</button>
+      <button class="modal-close" onclick="closeModal()">Đóng & Xem Kết Quả</button>
     `;
   } else if (state === 'error') {
     box.innerHTML = `
       <span class="modal-icon" style="font-size:40px;color:#f0a0a0">⚠</span>
       <div class="modal-title" style="color:#f0a0a0">Có lỗi xảy ra</div>
-      <div class="modal-body">${extraMsg || 'Vui lòng kiểm tra lại URL Apps Script và thử lại.'}</div>
-      <button class="modal-close" onclick="closeModal()">Đóng</button>
-    `;
-  } else if (state === 'nourl') {
-    box.innerHTML = `
-      <span class="modal-icon" style="font-size:36px">⚙</span>
-      <div class="modal-title">Chưa cấu hình URL</div>
-      <div class="modal-body">
-        Vui lòng dán <strong>Google Apps Script Web App URL</strong> vào ô cấu hình phía trên, sau đó nhấn <strong>Lưu URL</strong> và thử lại.
-      </div>
+      <div class="modal-body">${extraMsg || 'Không thể lưu dữ liệu lúc này. Vui lòng thử lại sau.'}</div>
       <button class="modal-close" onclick="closeModal()">Đóng</button>
     `;
   }
@@ -1728,16 +1575,12 @@ function showModal(state, extraMsg) {
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  document.getElementById('btn-export').disabled = false;
-  document.getElementById('btn-export').textContent = '✦ Gửi Email & Lưu Sheet';
 }
 
 async function exportData() {
-  const scriptUrl = getScriptUrl();
-  if (!scriptUrl) { showModal('nourl'); return; }
+  // Gắn cứng URL Web App của bạn
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbw0RObUv52eDqA9_TMdwsH7E0gQxGdnOIq_LNVe0BQ8XcnRhJ-zvhjPzY06jjY4C3Dc/exec';
 
-  document.getElementById('btn-export').disabled = true;
-  document.getElementById('btn-export').textContent = 'Đang xử lý...';
   showModal('loading');
 
   // Build scores
@@ -1764,12 +1607,7 @@ async function exportData() {
     };
   });
 
-  // Wait for radar base64 if not ready yet
-  let radarBase64 = window._radarBase64 || '';
-  if (!radarBase64) {
-    await new Promise(r => setTimeout(r, 1400));
-    radarBase64 = window._radarBase64 || document.getElementById('radarChart').toDataURL('image/png');
-  }
+  const radarBase64 = window._radarBase64; // Đã được lấy ở bước onComplete của Chart
 
   const payload = {
     userInfo,
@@ -1795,7 +1633,7 @@ async function exportData() {
     showModal('success');
   } catch(err) {
     showModal('error', err.message.includes('Failed to fetch')
-      ? 'Không kết nối được đến Apps Script. Kiểm tra URL và đảm bảo đã deploy đúng cách.'
+      ? 'Không kết nối được đến máy chủ lưu trữ. Bạn kiểm tra kết nối mạng nhé.'
       : err.message);
   }
 }
@@ -1804,6 +1642,7 @@ function restartSurvey() {
   answers = {};
   userInfo = {};
   currentSection = 0;
+  window._hasAutoExported = false; // Reset trạng thái để chạy tự động cho lần làm khảo sát tiếp theo
   document.getElementById('results').classList.remove('active');
   document.getElementById('results').style.display = '';
   // Clear info fields
